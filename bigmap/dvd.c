@@ -13,7 +13,7 @@
 
 #include "dvd.h"
 
-#define dvd_SPEED	0x0040
+#define dvd_SPEED	0x0001
 
 // --------------------------------------------------------------------
 // EXTERNAL
@@ -65,7 +65,8 @@ void dvd_init(TSpriteDVD*dvd, int x, int y, int obj_id)
 {
 	dvd->x= x;
 	dvd->y= y;
-	dvd->vx= dvd->vy= 0;
+	dvd->vx=dvd_SPEED;
+	dvd->vy=-dvd_SPEED;
 
 	dvd->objId= obj_id;
 
@@ -77,19 +78,43 @@ void dvd_init(TSpriteDVD*dvd, int x, int y, int obj_id)
 
 void dvd_move(TSpriteDVD*dvd)
 {
-	POINT pt = { (dvd->x >> 8) - g_vp.x, (dvd->y >> 8) - g_vp.y };
-	OBJ_ATTR* obj = &obj_buffer[dvd->objId];
+	
+	
 	// TODO : collision testing here?
-	if (dvd->x > 240)
+	if (dvd->x < 0)
 	{
-		dvd->x += dvd_SPEED;
-		dvd->y += dvd_SPEED / 3 * 2;
+		dvd->vx = dvd_SPEED;
 	}
-	else {
-		dvd->x -= dvd_SPEED;
-		dvd->y -= dvd_SPEED;
+	else if (dvd->x > 172){
+		dvd->vx = -dvd_SPEED;
 	}
-	//obj_set_pos(obj, pt.x, pt.y);
+
+	if (dvd->y < 0)
+	{
+		dvd->vy = dvd_SPEED;
+	}
+	else if (dvd->y > 128) {
+		dvd->vy = -dvd_SPEED;
+	}
+
+	dvd->x += dvd->vx;
+	dvd->y += dvd->vy;
+	//meta sprite move
+	for (int i = 0; i < 8; i++)
+	{
+		POINT pt = { (dvd->x) - g_vp.x, (dvd->y) - g_vp.y };
+		OBJ_ATTR* obj = &obj_buffer[dvd->objId + i];
+		obj->attr2 = ATTR2_BUILD((i*4)+96, dvd->palette, 0);
+		if (i < 4)
+		{
+			obj_set_pos(obj, pt.x + (16 * i), pt.y);
+		}
+		else {
+			obj_set_pos(obj, pt.x + (16 * (i - 4)), pt.y + 16);
+		}
+		
+	}
+	
 }
 
 

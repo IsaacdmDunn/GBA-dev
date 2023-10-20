@@ -22,6 +22,7 @@ typedef struct TSpriteDVD
 	FIXED		x, y;		//!< Position
 	FIXED		vx, vy;		//!< Velocity
 	u8			objId;		//!< Object index
+	int			palette;
 } TSpriteDVD;
 
 #endif // __dvd__
