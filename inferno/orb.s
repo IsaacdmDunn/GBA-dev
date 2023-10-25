@@ -1,0 +1,37 @@
+
+@{{BLOCK(orb)
+
+@=======================================================================
+@
+@	orb, 32x16@4, 
+@	+ palette 32 entries, not compressed
+@	+ 8 tiles Metatiled by 2x2 not compressed
+@	Total size: 64 + 256 = 320
+@
+@	Time-stamp: 2023-10-21, 16:04:55
+@	Exported by Cearn's GBA Image Transmogrifier, v0.8.3
+@	( http://www.coranac.com/projects/#grit )
+@
+@=======================================================================
+
+	.section .rodata
+	.align	2
+	.global orbTiles		@ 256 unsigned chars
+orbTiles:
+	.word 0xFFF00000,0xFFFF0000,0xF5FFFF00,0x555FFF00,0x5555FFF0,0x75555FFF,0x77755FFF,0x7775F5FF
+	.word 0x00000FFF,0x0000FFFF,0x00FFF55F,0x00FFF55F,0x0FFF5555,0xFFF5F557,0xFF555777,0xF5555777
+	.word 0x775555FF,0x775555FF,0x755F55FF,0x5555FFF0,0x555FFF00,0x55FFFF00,0xFFFF0000,0xFFF00000
+	.word 0xFFFF5777,0xFF555577,0xFF555557,0x0FF55555,0x00FFF5F5,0x00FFFF55,0x0000FFFF,0x00000FFF
+	.word 0xFFF00000,0xFFFF0000,0xF5FFFF00,0x5F5FFF00,0x555FFFF0,0x55555FFF,0x7555FFFF,0x775555FF
+	.word 0x00000FFF,0x0000FFFF,0x00FFF55F,0x00FFF5F5,0x0FFF5555,0xFFF5F555,0xFF555777,0xF5555777
+	.word 0x775555FF,0x775555FF,0x555F55FF,0x5555FFF0,0x5FFFFF00,0x55FFFF00,0xFFFF0000,0xFFF00000
+	.word 0xFFF55777,0xFFF55577,0xFF555F55,0x0FF5FF55,0x00FFF555,0x00FFFF55,0x0000FFFF,0x00000FFF
+
+	.section .rodata
+	.align	2
+	.global orbPal		@ 64 unsigned chars
+orbPal:
+	.word 0x7FFF673F,0x2A7D32BF,0x01DF1197,0x237F1151,0x0A6A12EE,0x32663B68,0x7E391084,0x10595D9D
+	.word 0x40CD0000,0x1C5F6955,0x0C225911,0x308A7958,0x48CF5D13,0x38AA7157,0x7D796535,0x65D55110
+
+@}}BLOCK(orb)
