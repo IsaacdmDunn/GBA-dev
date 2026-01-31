@@ -6,7 +6,7 @@ modified to work with libtonc
 */
 /* define the timer control registers */
 #include <tonc.h>
-#include "Music/zelda_treasure_16K_mono.h"
+//#include "Music/zelda_treasure_16K_mono.h"
 
 
 bool resetMusic = true;
@@ -121,12 +121,12 @@ void on_vblank() {
 		/* restart the sound again when it runs out */
 		channel_a_vblanks_remaining = channel_a_total_vblanks;
 		*dma1_control = 0;
-		*dma1_source = (unsigned int)zelda_treasure_16K_mono;
+		*dma1_source = (unsigned int)24026; //length of zelda treasure sound
 		*dma1_control = 0x400000 | DMA_REPEAT | DMA_32 |
 			IRQ_TIMER0 | DMA_ENABLE;
 
-		/**sound_control &= ~(SOUND_A_RIGHT_CHANNEL | SOUND_A_LEFT_CHANNEL | SOUND_A_FIFO_RESET);
-		*dma1_control = 0;*/
+		*sound_control &= ~(SOUND_A_RIGHT_CHANNEL | SOUND_A_LEFT_CHANNEL | SOUND_A_FIFO_RESET);
+		*dma1_control = 0;
 	}
 	else {
 		channel_a_vblanks_remaining--;

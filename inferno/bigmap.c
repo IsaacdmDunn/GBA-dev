@@ -20,6 +20,7 @@
 #include "background.h" 
 
 #include "GameOverScreen.h"
+//#include "mapTiles.h"
 #include "gameScreen.h"
 #include "titleScreen.h"
 
@@ -29,6 +30,8 @@
 
 #include "Music/gameOverFFF.h"
 #include "Music/gamePlasticWastelandt.h"
+#include "Music/zelda_treasure_16K_mono.h"
+#include "Music/zelda_music_16K_mono.h"
 
 #define kakarikoMapPitch 128
 int j;
@@ -59,6 +62,29 @@ u32 timerReset = 0;
 unsigned int transitionEffect = 128;
 unsigned int transitionSpeed = 8;
 bool fadein = false;
+#define MAP_AFF_SIZE 0x0100
+
+u16 mapData[600] = {
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
 
 enum levelState
 {
@@ -100,13 +126,18 @@ void initGame()
 	// Basic setups
 	resetMusic = true;
 	irq_init(NULL);
-	irq_add(II_VBLANK, NULL);
+	irq_add(II_VBLANK, NULL); 
 	oam_init(obj_buffer, 6);
+
+	//LZ77UnCompVram(maptilesTiles, tile_mem[0]);
+	//GRIT_CPY(pal_bg_mem, maptilesPal);
+	//bgt_csv(&g_bg, 1, BG_CBB(0) | BG_SBB(29), maptilesMap, 30, 20, mapData);
 
 	// Bigmap setup
 	LZ77UnCompVram(gameScreenTiles, tile_mem[0]);
 	GRIT_CPY(pal_bg_mem, gameScreenPal);
-	bgt_init(&g_bg, 1, BG_CBB(0)|BG_SBB(29), gameScreenMap,30, 20);
+	bgt_init(&g_bg, 1, BG_CBB(0) | BG_SBB(29), gameScreenMap, 30, 20);
+	
 
 
 	int i;
@@ -172,7 +203,10 @@ void initTitle() {
 	// Bigmap setup
 	LZ77UnCompVram(titleScreenTiles, tile_mem[0]);
 	GRIT_CPY(pal_bg_mem, titleScreenPal);
-	bgt_init(&g_bg, 1, BG_CBB(0) | BG_SBB(29), titleScreenMap, 30, 20); 
+	bgt_init(&g_bg, 0, BG_CBB(0) | BG_SBB(29), titleScreenMap, 30, 20);
+
+	
+	
 
 	//# NOTE: erasing and rendering text flows over into the VDRAW period.
 	//# Using the ASM renderer and placing the text at the bottom limits its effects.
@@ -243,7 +277,8 @@ void updateGameOver() {
 	if (resetMusic)
 	{
 
-		play_sound(GameOverFFF, GameOverFFF_bytes, 16000, 'B');
+		play_sound(zelda_treasure_16K_mono, zelda_treasure_16K_mono_bytes, 16000, 'A');
+		play_sound(zelda_music_16K_mono, zelda_music_16K_mono_bytes, 16000, 'B');
 		resetMusic = false;
 	}
 
@@ -259,6 +294,12 @@ void updateGameOver() {
 	tte_printf("#{es;P} Press the start button to try again"); 
 }
 void updateGame() {
+
+	//doesnt work
+	if (key_is_down(KEY_LEFT)) {
+		play_sound(zelda_treasure_16K_mono, zelda_treasure_16K_mono_bytes, 16000, 'A');
+	}
+
 	if (fadein)
 	{
 		transitionEffect-=8;
@@ -340,6 +381,7 @@ void updateGame() {
 
 
 	bgt_update(&g_bg, &g_vp);
+	//bgt_update(&g_bg2, &g_vp);
 	tte_printf("#{es;P} Score = %d     HiScore = %d",
 		score, hiscore);
 
@@ -377,16 +419,14 @@ int main()
 	// cascade into tm3
 	REG_TM3CNT = TM_ENABLE | TM_CASCADE;
 	
-	
+	REG_BG0CNT = BG_CBB(0) | BG_SBB(2) | BG_4BPP | BG_MOSAIC;
+	REG_BG1CNT = BG_CBB(2) | BG_SBB(8) | BG_8BPP | BG_MOSAIC;
 	
 	
 	while (1)
 	{
-		
 		VBlankIntrWait();
-
 		on_vblank();
-
 		key_poll();
 
 		switch (level)
@@ -403,11 +443,10 @@ int main()
 		default:
 			break;
 		}
-		
-		
-
 		REG_MOSAIC = MOS_BUILD(transitionEffect >> 3, transitionEffect >> 3, transitionEffect >> 3, transitionEffect >> 3);
-		REG_BG1CNT = BG_CBB(0) | BG_SBB(29) | BG_MOSAIC;
+		
+		
+		//REG_BG1CNT = BG_CBB(1) | BG_SBB(13) | BG_MOSAIC;
 		pal_bg_mem[0] = REG_VCOUNT;
 	}
 	return 0;

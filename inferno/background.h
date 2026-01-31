@@ -4,6 +4,10 @@
 #include <string.h>
 // TODO: rename structs and members
 
+BG_AFFINE bgaff;
+
+
+
 typedef struct VIEWPORT
 {
 	int x, xmin, xmax, xpage;
@@ -62,7 +66,8 @@ void vp_set_pos(VIEWPORT* vp, int x, int y)
 
 void bgt_init(TMapInfo* bgt, int bgnr, u32 ctrl,
 	const void* map, u32 map_width, u32 map_height)
-{
+{	
+	bgaff = bg_aff_default;
 	memset(bgt, 0, sizeof(TMapInfo));
 
 	bgt->flags = bgnr;
@@ -84,7 +89,7 @@ void bgt_init(TMapInfo* bgt, int bgnr, u32 ctrl,
 		for (ix = 0; ix < 32; ix++)
 			dst[iy * 32 + ix] = src[iy * bgt->srcMapWidth + ix];
 
-	
+	bgaff = bg_aff_default;
 }
 
 void bgt_colcpy(TMapInfo* bgt, int tx, int ty)
@@ -153,4 +158,41 @@ void bgt_update(TMapInfo* bgt, VIEWPORT* vp)
 	int bgnr = bgt->flags;
 	REG_BG_OFS[bgnr].x = bgt->mapX = vx;
 	REG_BG_OFS[bgnr].y = bgt->mapY = vy;
+}
+
+void bgt_csv(TMapInfo* bgt, int bgnr, u32 ctrl,
+	const void* map, u32 map_width, u32 map_height, u16 mapData[]) {
+
+	memset(bgt, 0, sizeof(TMapInfo));
+
+	bgt->flags = bgnr;
+	bgt->cnt = ctrl;
+	bgt->dstMap = se_mem[BFN_GET(ctrl, BG_SBB)];
+
+	REG_BGCNT[bgnr] = ctrl;
+	REG_BG_OFS[bgnr].x = 0;
+	REG_BG_OFS[bgnr].y = 0;
+
+
+	bgt->srcMap = (SCR_ENTRY*)map;
+	bgt->srcMapWidth = map_width;
+	bgt->srcMapHeight = map_height;
+
+	int ix, iy;
+	
+
+
+	SCR_ENTRY* dst = bgt->dstMap, * src = bgt->srcMap;
+	for (iy = 0; iy < 32; iy++) {
+		for (ix = 0; ix < 32; ix++) {
+			if (mapData[iy * 20 + ix] != -1)
+			{
+				dst[iy * 32 + ix] = src[mapData[iy * 32 + ix]];
+			}
+			else {
+				dst[iy * 32 + ix] = src[4];
+			}
+			
+		}
+	}
 }
